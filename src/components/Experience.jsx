@@ -50,15 +50,34 @@ const Experience = () => {
     }
   ];
 
+  // 🌟 បន្ថែម Hook ដើម្បីស្ទង់ទំហំអេក្រង់ (Responsive Logic)
+  const [dimensions, setDimensions] = React.useState({ width: 500, height: 320 });
+
+  React.useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 640) { // Mobile
+        setDimensions({ width: window.innerWidth - 48, height: 450 });
+      } else if (window.innerWidth < 1024) { // Tablet
+        setDimensions({ width: 450, height: 300 });
+      } else { // Desktop
+        setDimensions({ width: 520, height: 320 });
+      }
+    };
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   return (
-    <section id="experience" className="py-24 relative overflow-hidden">
+    <section id="experience" className="py-24 relative overflow-hidden bg-black">
       <div className="max-w-7xl mx-auto px-6">
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           className="text-center mb-16"
         >
-          <h2 className="text-4xl md:text-5xl font-black mb-4">
+          <h2 className="text-4xl md:text-5xl font-black mb-4 text-white">
             My <span className="text-emerald-400">Experience</span>
           </h2>
           <p className="text-zinc-400 text-lg font-khmer">បទពិសោធន៍ការងារ និងការសិក្សាកន្លងមក</p>
@@ -66,8 +85,8 @@ const Experience = () => {
 
         <CardStack 
           items={experienceData} 
-          cardWidth={500} 
-          cardHeight={300}
+          cardWidth={dimensions.width} 
+          cardHeight={dimensions.height}
           autoAdvance={true}
         />
       </div>
@@ -75,22 +94,22 @@ const Experience = () => {
   );
 };
 
-// --- CardStack Component (Modified for JS & Style) ---
+// --- CardStack Component ---
 export function CardStack({
   items,
   initialIndex = 0,
-  maxVisible = 5,
-  cardWidth = 520,
-  cardHeight = 320,
-  overlap = 0.5,
-  spreadDeg = 35,
-  perspectivePx = 1100,
-  depthPx = 120,
-  tiltXDeg = 10,
-  activeLiftPx = 25,
-  activeScale = 1.05,
-  inactiveScale = 0.9,
-  springStiffness = 250,
+  maxVisible = 3, // កាត់បន្ថយចំនួនកាតមើលឃើញដើម្បីកុំឱ្យញ៉េរញ៉ៃលើ Mobile
+  cardWidth,
+  cardHeight,
+  overlap = 0.6,
+  spreadDeg = 15, // បន្ថយមុំបង្វិលដើម្បីឱ្យមើលទៅស្អាតលើអេក្រង់តូច
+  perspectivePx = 1000,
+  depthPx = 100,
+  tiltXDeg = 5,
+  activeLiftPx = 20,
+  activeScale = 1,
+  inactiveScale = 0.85,
+  springStiffness = 200,
   springDamping = 25,
   loop = true,
   autoAdvance = false,
@@ -113,16 +132,14 @@ export function CardStack({
   }, [autoAdvance, hovering, len, active]);
 
   const maxOffset = Math.max(0, Math.floor(maxVisible / 2));
-  const cardSpacing = Math.max(10, Math.round(cardWidth * (1 - overlap)));
+  // 🌟 កែសម្រួល Spacing ឱ្យសមស្របតាមអេក្រង់
+  const cardSpacing = cardWidth < 400 ? 20 : Math.max(10, Math.round(cardWidth * (1 - overlap)));
   const stepDeg = maxOffset > 0 ? spreadDeg / maxOffset : 0;
 
   return (
-    <div className={cn("w-full", className)} onMouseEnter={() => setHovering(true)} onMouseLeave={() => setHovering(false)}>
-      <div className="relative w-full outline-none" style={{ height: cardHeight + 100 }} tabIndex={0}>
+    <div className={cn("w-full select-none", className)} onMouseEnter={() => setHovering(true)} onMouseLeave={() => setHovering(false)}>
+      <div className="relative w-full flex justify-center items-center" style={{ height: cardHeight + 60 }}>
         
-        {/* Background Glows */}
-        <div className="absolute inset-x-0 top-0 mx-auto h-64 w-[60%] rounded-full bg-emerald-500/10 blur-[100px] pointer-events-none" />
-
         <div className="absolute inset-0 flex items-center justify-center" style={{ perspective: `${perspectivePx}px` }}>
           <AnimatePresence initial={false}>
             {items.map((item, i) => {
@@ -132,7 +149,7 @@ export function CardStack({
 
               const rotateZ = off * stepDeg;
               const x = off * cardSpacing;
-              const y = abs * 8;
+              const y = abs * 6;
               const z = -abs * depthPx;
               const isActive = off === 0;
 
@@ -141,17 +158,23 @@ export function CardStack({
                   key={item.id}
                   onClick={() => setActive(i)}
                   className={cn(
-                    "absolute rounded-4xl border border-white/10 overflow-hidden shadow-2xl bg-zinc-900/90 backdrop-blur-xl transition-colors duration-500",
-                    isActive ? "cursor-default border-emerald-500/40" : "cursor-pointer grayscale hover:grayscale-0"
+                    "absolute rounded-4xl border border-white/10 overflow-hidden shadow-2xl bg-zinc-900/95 backdrop-blur-xl",
+                    isActive ? "z-50 border-emerald-500/50" : "z-0 opacity-40"
                   )}
-                  style={{ width: cardWidth, height: cardHeight, zIndex: 100 - abs, transformStyle: "preserve-3d" }}
-                  initial={{ opacity: 0, x, y: y + 50, scale: inactiveScale }}
-                  animate={{ opacity: 1, x, y: y + (isActive ? -activeLiftPx : 0), rotateZ, rotateX: isActive ? 0 : tiltXDeg, scale: isActive ? activeScale : inactiveScale }}
+                  style={{ width: cardWidth, height: cardHeight, transformStyle: "preserve-3d" }}
+                  initial={{ opacity: 0, x, scale: inactiveScale }}
+                  animate={{ 
+                    opacity: 1, 
+                    x, 
+                    y: isActive ? -activeLiftPx : y, 
+                    rotateZ, 
+                    rotateX: isActive ? 0 : tiltXDeg, 
+                    scale: isActive ? activeScale : inactiveScale,
+                    filter: isActive ? "grayscale(0%)" : "grayscale(100%)"
+                  }}
                   transition={{ type: "spring", stiffness: springStiffness, damping: springDamping }}
                 >
-                  <div className="h-full w-full" style={{ transform: `translateZ(${z}px)`, transformStyle: "preserve-3d" }}>
-                     <ExperienceCardContent item={item} isActive={isActive} />
-                  </div>
+                   <ExperienceCardContent item={item} isActive={isActive} />
                 </motion.div>
               );
             })}
@@ -160,14 +183,14 @@ export function CardStack({
       </div>
 
       {showDots && (
-        <div className="mt-8 flex items-center justify-center gap-4">
-          <div className="flex items-center gap-2 px-4 py-2 bg-zinc-900/50 rounded-full border border-white/5">
+        <div className="mt-12 flex justify-center">
+          <div className="flex gap-2 p-2 bg-zinc-900/50 rounded-full border border-white/5">
             {items.map((_, idx) => (
               <button
                 key={idx}
                 onClick={() => setActive(idx)}
-                className={cn("h-1.5 rounded-full transition-all duration-300", 
-                  idx === active ? "w-6 bg-emerald-500" : "w-1.5 bg-zinc-600")}
+                className={cn("h-1.5 transition-all duration-500 rounded-full", 
+                  idx === active ? "w-8 bg-emerald-500" : "w-2 bg-zinc-700")}
               />
             ))}
           </div>
@@ -179,31 +202,42 @@ export function CardStack({
 
 function ExperienceCardContent({ item, isActive }) {
   return (
-    <div className="relative h-full w-full flex flex-col md:flex-row overflow-hidden">
-      {/* Image half */}
-      <div className="h-1/2 md:h-full md:w-1/2 relative overflow-hidden">
-        <img src={item.imageSrc} alt={item.title} className="h-full w-full object-cover" />
-        <div className="absolute inset-0 bg-linear-to-t from-zinc-950 via-transparent to-transparent md:bg-linear-to-r" />
+    <div className="relative h-full w-full flex flex-col sm:flex-row overflow-hidden group">
+      {/* Image Section */}
+      <div className="h-2/5 sm:h-full sm:w-1/2 relative">
+        <img src={item.imageSrc} alt={item.title} className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" />
+        <div className="absolute inset-0 bg-linear-to-t from-zinc-900 via-transparent to-transparent sm:bg-linear-to-r" />
       </div>
 
-      {/* Text half */}
-      <div className="h-1/2 md:h-full md:w-1/2 p-6 flex flex-col justify-center bg-zinc-900/50">
-        <div className="flex items-center gap-2 mb-2 text-emerald-400 text-xs font-bold uppercase tracking-widest">
-          <Briefcase size={14} />
+      {/* Content Section */}
+      <div className="h-3/5 sm:h-full sm:w-1/2 p-6 md:p-8 flex flex-col justify-center bg-zinc-900/40">
+        <div className="flex items-center gap-2 mb-3 text-emerald-400 text-[10px] font-black uppercase tracking-[0.2em]">
+          <Briefcase size={14} strokeWidth={3} />
           {item.tag}
         </div>
-        <h3 className="text-xl font-bold text-white mb-2 leading-tight">{item.title}</h3>
-        <p className="text-zinc-400 text-sm font-khmer line-clamp-3">{item.description}</p>
+        <h3 className="text-xl md:text-2xl font-black text-white mb-3 leading-tight font-khmer">
+          {item.title}
+        </h3>
+        <p className="text-zinc-400 text-sm font-khmer leading-relaxed line-clamp-4 md:line-clamp-none">
+          {item.description}
+        </p>
         
-        {isActive && (
-           <motion.a 
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-            href={item.href} 
-            className="mt-4 inline-flex items-center gap-2 text-emerald-400 text-sm font-bold hover:underline"
-           >
-            លម្អិតបន្ថែម <SquareArrowOutUpRight size={14} />
-           </motion.a>
-        )}
+        <AnimatePresence>
+          {isActive && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mt-6"
+            >
+              <a 
+                href={item.href} 
+                className="inline-flex items-center gap-2 text-emerald-400 text-xs font-black uppercase tracking-widest hover:text-emerald-300 transition-colors border-b border-emerald-500/20 pb-1"
+              >
+                លម្អិតបន្ថែម <SquareArrowOutUpRight size={14} />
+              </a>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   );
