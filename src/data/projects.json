@@ -1,0 +1,20 @@
+[
+  {
+    "id": 1,
+    "title": "E-Commerce Khmer",
+    "description": "វេបសាយលក់ផលិតផលខ្មែរ ប្រើ React + Tailwind",
+    "tech": ["React", "Tailwind CSS", "Firebase"],
+    "image": "/images/project1.jpg",
+    "liveUrl": "https://yourproject.vercel.app",
+    "githubUrl": "https://github.com/yourusername/project"
+  },
+  {
+    "id": 2,
+    "title": "Khmer Dictionary App",
+    "description": "កម្មវិធីស្វែងរកពាក្យខ្មែរ",
+    "tech": ["React", "TypeScript", "Context API"],
+    "image": "/images/project2.jpg",
+    "liveUrl": "",
+    "githubUrl": "https://github.com/yourusername/khmer-dict"
+  }
+]

@@ -1,0 +1,72 @@
+/* ១. ដាក់ @import ទាំងអស់នៅខាងលើគេបង្អស់ គ្មានអ្វីនៅពីលើវាឡើយ */
+@import url('https://fonts.googleapis.com/css2?family=Battambang:wght@100;300;400;700;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+@import "tailwindcss";
+
+/* ២. បន្ទាប់មកទើបដាក់ @theme */
+@theme {
+  --font-sans: "Inter", "Battambang", sans-serif;
+}
+
+/* ៣. បន្ទាប់មកទើបប្រើ @layer base */
+@layer base {
+  body {
+    @apply font-sans bg-[#050509] text-white selection:bg-emerald-500/30;
+    scroll-behavior: smooth;
+  }
+  html {
+    scroll-behavior: smooth; /* ធ្វើឱ្យការចុច Link ក្នុងទំព័រតែមួយមានចលនារលូន */
+  }
+}
+
+/* ៤. ចុងក្រោយគឺ Keyframes និង Utilities */
+@layer utilities {
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+  }
+
+  /* ចលនាផ្កាយព្រិចៗ */
+  @keyframes twinkle {
+    0%, 100% { opacity: 0.3; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.2); }
+  }
+
+  .animate-twinkle {
+    animation: twinkle var(--twinkle-duration, 3s) ease-in-out infinite;
+  }
+  
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
+}
+
+[data-glow] {
+  --border-size: calc(var(--border, 2) * 1px);
+  --spotlight-size: calc(var(--size, 150) * 1px);
+  --hue: calc(var(--base) + (var(--xp, 0) * var(--spread, 0)));
+}
+
+[data-glow]::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(
+    var(--spotlight-size) var(--spotlight-size) at calc(var(--x, 0) * 1px) calc(var(--y, 0) * 1px),
+    hsl(var(--hue, 210) 80% 60% / 1),
+    transparent 100%
+  );
+  background-attachment: fixed;
+  mask: linear-gradient(transparent, transparent), linear-gradient(white, white);
+  mask-clip: padding-box, border-box;
+  mask-composite: intersect;
+  border: var(--border-size) solid transparent;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.shadow-emerald-glow {
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.2),
+              0 0 40px rgba(16, 185, 129, 0.1);
+}
+
