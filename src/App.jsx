@@ -60,9 +60,9 @@ function App() {
                 transition={{ duration: 0.5, delay: 0.1 }}
                 className="text-4xl sm:text-5xl md:text-7xl font-black mb-6 leading-[1.1] md:leading-tight px-2"
               >
-                សួស្តី! ខ្ញុំតូនីជា <br/>
+                សួស្តី!ខ្ញុំតូនីជា <br/>
                 <span className="text-transparent bg-clip-text bg-linear-to-r from-emerald-400 to-cyan-400">
-                  Developer
+                  អ្នក Developer កម្មវិធី
                 </span>
               </motion.h1>
 
