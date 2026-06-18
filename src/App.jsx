@@ -100,7 +100,7 @@ function App() {
           <ServicesAndProject/>
           <OrbitingSkills />
           <Experience />
-          <Projects />
+          {/* <Projects /> */}
           <FAQ />
           <SocialConnect />
           <TeamSphere />
