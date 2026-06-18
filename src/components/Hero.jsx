@@ -14,8 +14,8 @@ const DownloadCVButton = () => {
 
     // ល្បែងទាញយក File ពិតប្រាកដ
     const link = document.createElement('a');
-    link.href = '/cv/PHAN-Tony.pdf';
-    link.download = 'PHAN-Tony-CV.pdf';
+    link.href = '/cv/PHAN_TONY.pdf';
+    link.download = 'PHAN_TONY-CV.pdf';
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
