@@ -160,7 +160,7 @@ export const Hero = ({ items = myItems }) => {
           </a>
 
           {/* View CV */}
-          <a href="/cv/PHAN-Tony.pdf" target="_blank" rel="noreferrer" className="px-8 py-4.5 bg-zinc-900 border border-white/5 text-white font-bold rounded-2xl hover:border-emerald-500 transition-all text-[11px] uppercase tracking-widest flex items-center gap-2">
+          <a href="/cv/PHAN_TONY.pdf" target="_blank" rel="noreferrer" className="px-8 py-4.5 bg-zinc-900 border border-white/5 text-white font-bold rounded-2xl hover:border-emerald-500 transition-all text-[11px] uppercase tracking-widest flex items-center gap-2">
             <Eye size={16} className="text-emerald-500" /> View CV
           </a>
           
