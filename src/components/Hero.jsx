@@ -126,7 +126,6 @@ export const Hero = ({ items = myItems }) => {
   return (
     <div ref={containerRef} className="relative flex flex-col md:flex-row items-center justify-between w-full min-h-screen px-6 py-12 md:px-24 overflow-hidden bg-transparent">
       
-      {/* ផ្នែកអក្សរខាងឆ្វេង */}
       <div className="z-20 w-full md:w-1/2 flex flex-col justify-center">
         <nav className="mb-12">
           <ul className="flex flex-col gap-8 md:gap-12">
